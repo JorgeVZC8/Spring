@@ -44,6 +44,7 @@ public class GameServiceImpl implements GameService {
     public Game putGame(Game requestBody){
         Game game = gameRepository.findById(requestBody.getId())
                 .orElseThrow(() -> new GameException(HttpStatus.NOT_FOUND,"Error, finding game" ));
+        game.setName(requestBody.getName());
         gameRepository.save(game);
         return game;
         }
