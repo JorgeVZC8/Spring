@@ -7,6 +7,7 @@ import com.example.game_service.service.GameService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,19 +15,16 @@ import java.util.Optional;
 public class GameServiceImpl implements GameService {
 
     private final GameRepository gameRepository;
-
     public GameServiceImpl(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
     }
 
     public Game saveGame (Game gameRequest){
-        Game newGame = gameRepository.save(gameRequest);
-        return newGame;
+        return gameRepository.save(gameRequest);
     }
 
     public List<Game> getAllGames (){
-        List<Game> games = gameRepository.findAll();
-        return games;
+        return gameRepository.findAll();
     }
 
     public Game getGameById(Long id){
@@ -34,18 +32,16 @@ public class GameServiceImpl implements GameService {
                 .orElseThrow(() -> new GameException(HttpStatus.NOT_FOUND, "Error, finding game"));
     }
 
-    public Game deleteGame(Long id){
-        Game game = this.gameRepository.findById(id)
-                .orElseThrow(() -> new GameException(HttpStatus.NOT_FOUND,"Error, finding game" ));
+    public void deleteGame(Long id){
         gameRepository.deleteById(id);
-        return game;
     }
 
-    public Game putGame(Game requestBody){
-        Game game = gameRepository.findById(requestBody.getId())
-                .orElseThrow(() -> new GameException(HttpStatus.NOT_FOUND,"Error, finding game" ));
-        game.setName(requestBody.getName());
-        gameRepository.save(game);
-        return game;
+    public Game putGame(Long id, Game requestBody){
+        return Optional.of(requestBody)
+                .map(game -> {
+                    game.setId(id);
+                    return gameRepository.save(game);
+                })
+                .orElseThrow(() -> new GameException(HttpStatus.NOT_FOUND, "Error, finding game"));
         }
 }

@@ -7,10 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-
 public class GameController implements GameApi {
 
     private final GameServiceImpl gameService;
@@ -25,24 +23,23 @@ public class GameController implements GameApi {
     }
 
     public ResponseEntity<List<Game>> getAll(){
-        List<Game> games= gameService.getAllGames();
+        List<Game> games= this.gameService.getAllGames();
         return ResponseEntity.ok(games);
     }
 
     public ResponseEntity<String> getGameById(@PathVariable Long id){
-        Game game= gameService.getGameById(id);
+        Game game= this.gameService.getGameById(id);
         return ResponseEntity.ok(game.getName() + ": /n" + game.toString());
     }
 
-    public ResponseEntity<String> deleteGame(@PathVariable Long id){
-        Game game=gameService.deleteGame(id);
-        return ResponseEntity.ok("The game: /n"+ game.toString() +" has been successfully deleted");
+    public ResponseEntity<Game> deleteGame(@PathVariable Long id){
+        this.gameService.deleteGame(id);
+        return ResponseEntity.noContent().build();
     }
 
-    public ResponseEntity<String> putGame(@RequestBody Game requestBody){
-        Game game= gameService.putGame(requestBody);
-        return ResponseEntity.ok("The game: /n"+ game.toString() +" has been successfully modified");
-
+    public ResponseEntity<Game> putGame(@PathVariable Long id, @RequestBody Game requestBody){
+        this.gameService.putGame(id, requestBody);
+        return ResponseEntity.noContent().build();
     }
 
 }

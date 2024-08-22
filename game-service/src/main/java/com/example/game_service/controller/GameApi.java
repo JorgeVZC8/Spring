@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequestMapping(ApiPathVariables.v1_ROUTE + ApiPathVariables.GAME_ROUTE)
 public interface GameApi {
@@ -17,7 +16,7 @@ public interface GameApi {
     @GetMapping("/{id}")
     ResponseEntity<String> getGameById(@PathVariable Long id);
     @DeleteMapping("/{id}")
-    ResponseEntity<String> deleteGame(@PathVariable Long id);
-    @PutMapping
-    ResponseEntity<String> putGame(@RequestBody Game game);
+    ResponseEntity<Game> deleteGame(@PathVariable Long id);
+    @PutMapping("/{id}")
+    ResponseEntity<Game> putGame(@PathVariable Long id,@RequestBody Game game);
 }
