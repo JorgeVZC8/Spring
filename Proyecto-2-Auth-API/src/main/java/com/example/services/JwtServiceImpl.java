@@ -14,6 +14,7 @@ public class JwtServiceImpl implements JwtService{
 
     private final String secretToken;
 
+    //Estamos cogiendo el secret token del archivo yaml
     public JwtServiceImpl(@Value("${jwt.secret}") String secretToken) {
         this.secretToken = secretToken;
     }
@@ -27,6 +28,8 @@ public class JwtServiceImpl implements JwtService{
                 .setExpiration(expiration)
                 .signWith(SignatureAlgorithm.HS512, this.secretToken)
                 .compact();
+        //que objeto estamos generando y a que se aplica (Jwts)
+
         return TokenResponse.builder()
                 .accessToken(token)
                 .build();
@@ -38,6 +41,7 @@ public class JwtServiceImpl implements JwtService{
                 .setSigningKey(this.secretToken).build()
                 .parseClaimsJws(token)
                 .getBody();
+        //Que hace este metodo. ¿Modifica el token anterior?, ¿Que objeto devuleve?
     }
 
     @Override

@@ -28,6 +28,14 @@ public class AuthServiceImpl implements AuthService{
                 .orElseThrow(()->new RuntimeException("Error crating user"));
     }
 
+    @Override
+    public TokenResponse login(UserRequest userRequest) {
+        return userRepository.findByEmail(userRequest.getEmail())
+                .filter(userModel -> userModel.getPassword().equals(userRequest.getPassword()))
+                .map(userModel -> jwtService.generateToken(userModel.getId()))
+                .orElseThrow(()-> new RuntimeException("Error login")) ;
+    }
+
     private UserModel mapToEntity(UserRequest userRequest){
         return UserModel.builder()
                 .email(userRequest.getEmail())

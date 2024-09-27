@@ -19,4 +19,8 @@ public class AuthController implements AuthApi {
     public ResponseEntity<TokenResponse> createUser(UserRequest userRequest) {
         return ResponseEntity.ok(authService.createUser(userRequest));
     }
+    @Override
+    public ResponseEntity<TokenResponse> login(UserRequest userRequest) {
+        return ResponseEntity.ok(authService.login(userRequest));
+    }
 }
