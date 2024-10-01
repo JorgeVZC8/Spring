@@ -5,6 +5,7 @@ import com.example.commons.dtos.UserRequest;
 import com.example.controllers.AuthApi;
 import com.example.services.AuthService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
