@@ -19,17 +19,18 @@ public class JwtServiceImpl implements JwtService{
         this.secretToken = secretToken;
     }
 
+    //Este metodo genera un Token
     @Override
     public TokenResponse generateToken(Long userId) {
-        Date expiration= new Date(Long.MAX_VALUE);
-        String token = Jwts.builder()
-                .setSubject(String.valueOf(userId))
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(expiration)
-                .signWith(SignatureAlgorithm.HS512, this.secretToken)
-                .compact();
-        //que objeto estamos generando y a que se aplica (Jwts)
+        Date expiration= new Date(Long.MAX_VALUE);//Fijamos una fecha de expiracion
+        String token = Jwts.builder()//Cremaos un objeto Jwts
+                .setSubject(String.valueOf(userId))//Modificamos el id del usuario extraido de la peticion
+                .setIssuedAt(new Date(System.currentTimeMillis()))//Fijamos la fecha de creacion
+                .setExpiration(expiration)//Seteamos la expiracion
+                .signWith(SignatureAlgorithm.HS512, this.secretToken)//Firmamos con el secretToken encriptado en este caso con el algoritmo HS512
+                .compact();//Lo compactamos en una cadena
 
+        //A partir de este objeto Jwts retornamos un TokenResponse cuyo accestoken es la cadena creada anteriormente
         return TokenResponse.builder()
                 .accessToken(token)
                 .build();

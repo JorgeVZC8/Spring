@@ -29,13 +29,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         this.userRepository = userRepository;
     }
 
+    //Este método es parte de un filtro de Spring Security que procesa cada solicitud HTTP antes de que llegue a los
+    // controladores de la aplicación. El propósito del filtro es autenticar al usuario en función del JWT que se encuentra
+    // en el encabezado Authorization.
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        Optional.ofNullable(request.getHeader("Authorization"))
-                .filter(header-> !header.isBlank())
-                .map(header-> header.substring(7))
-                .map(jwtService::extractUserId)
-                .flatMap(userId-> userRepository.findById(Long.valueOf(userId)))
+        Optional.ofNullable(request.getHeader("Authorization"))//Buscamos el valor Authorization en el ecabezado HTTP de la solicitud request y la encapsulamos en un Optional
+                //Filter es una metodo que pertenece a la clase optional que evalua si la condicion proporcionada se cumple, si no se cumple el Optinal pasara a un Optional.empty(). isBlank() disponible desde java 11 comprueba si la cadena esta vacia.
+                .filter(header-> !header.isBlank())//En este caso si no se cumple la condicion se devolvera un Optional.empty(); Esto nos permite evitar errores por el manejo de nulos.
+                //map() es un método de la clase `Optional` que se utiliza para aplicar una función a un valor si está presente. Si el `Optional` está vacío (`Optional.empty()`), el método no hace nada y devuelve un nuevo `Optional.empty()`. Si el `Opcional` contiene un valor (en este caso, el encabezado `Autorización`), se aplica la función proporcionada.
+                .map(header-> header.substring(7))//Extraemos del encabezado HTTP el Token puro.
+                .map(jwtService::extractUserId)//Extraemos el id del usuario
+                //Similar a map, pero se utiliza cuando la función aplicada devuelve otro Optional.
+                .flatMap(userId-> userRepository.findById(Long.valueOf(userId)))//Buscamos al usuario por su id
                 .ifPresent(userDetails->{
                     request.setAttribute("X-User-Id", userDetails.getId());
                     processAuthentication(request, userDetails);
